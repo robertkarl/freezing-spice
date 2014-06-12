@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="app_name">GridImageSearch</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">Image Search</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_full_screen_image">Image Details</string>
+    <string name="title_activity_search_settings">Search Settings</string>
+    <string name="drawer_open">Search History</string>
+    <string name="drawer_close">Results</string>
 
+
+    <string name="empty_state_maintext">No Results Found</string>
+    <string name="empty_state_subtext">You broke the internet</string>
+
+    <string name="error_state_maintext">Please reconnect</string>
+    <string name="error_state_subtext">You broke the internet</string>
 </resources>

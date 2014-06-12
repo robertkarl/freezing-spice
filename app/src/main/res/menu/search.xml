@@ -3,6 +3,13 @@
     tools:context=".SearchActivity" >
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
+        android:icon="@drawable/ic_gear"
         android:orderInCategory="100"
-        android:showAsAction="never" />
+        android:showAsAction="always" />
+    <item android:id="@+id/action_search"
+        android:orderInCategory="5"
+        android:title="Search"
+        android:icon="@drawable/ic_action_search"
+        android:showAsAction="ifRoom|collapseActionView"
+        android:actionViewClass="android.widget.SearchView" />
 </menu>

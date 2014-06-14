@@ -26,12 +26,13 @@ public class ImageResult {
     }
 
     public String toString() {
-        return "ImageResult " + thumbURL;
+        return "<ImageResult \"" + thumbURL + "\">";
     }
 
     public String getFullURL() {
         return fullURL;
     }
+
     public static ArrayList<? extends ImageResult> fromJSONArray (JSONArray array) {
         ArrayList <ImageResult> results = new ArrayList<ImageResult>();
         for (int i = 0; i < array.length(); i++) {

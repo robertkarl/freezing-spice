@@ -11,19 +11,29 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/editText"
+        android:id="@+id/etQuery"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@+id/button" />
+        android:hint="@string/hint_query"
+        android:layout_toLeftOf="@+id/btnSearch" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Search"
-        android:id="@+id/button"
+        android:onClick="onSearchClicked"
+        android:id="@+id/btnSearch"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
+
+    <GridView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/btnSearch"
+        android:id="@+id/gvResults"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"></GridView>
 
 </RelativeLayout>

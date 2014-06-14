@@ -1,4 +1,9 @@
 package net.robertkarl.gridimagesearch.app;
 
-public class SearchSettingsModel {
+import java.io.Serializable;
+
+public class SearchSettingsModel implements Serializable {
+
+    public String imageSize;
+
 }

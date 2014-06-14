@@ -2,7 +2,6 @@ package net.robertkarl.gridimagesearch.app;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -26,9 +25,12 @@ import java.util.ArrayList;
 
 public class SearchActivity extends Activity {
 
+    public static String SEARCH_SETTINGS_EXTRA = "net.robertkarl.searchSettings";
     private EditText etQuery;
     private Button btnSearch;
     private GridView gvResults;
+
+    private SearchSettingsModel mSearchSettings;
 
     public static String FULLSCREEN_IMAGE_KEY = "fullImageURL";
 
@@ -46,6 +48,9 @@ public class SearchActivity extends Activity {
         imageAdapter = new ImageResultsArrayAdapter(this, imageResults);
         gvResults.setAdapter(imageAdapter);
 
+        mSearchSettings = new SearchSettingsModel();
+        mSearchSettings.imageSize = "small";
+
         gvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -55,7 +60,6 @@ public class SearchActivity extends Activity {
                 startActivity(i);
             }
         });
-
     }
 
     private void setupSubviews() {
@@ -75,7 +79,8 @@ public class SearchActivity extends Activity {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             Intent i = new Intent(this, SearchSettingsActivity.class);
-            startActivity(i);
+            i.putExtra(SearchActivity.SEARCH_SETTINGS_EXTRA, mSearchSettings);
+            startActivityForResult(i, 420);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -86,7 +91,8 @@ public class SearchActivity extends Activity {
         Toast.makeText(this,String.format("Searching for %s", query), Toast.LENGTH_LONG).show();
 
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get("http://ajax.googleapis.com/ajax/services/search/images?rsz=8&start=" + 0 + "&v=1.0&q=" + Uri.encode(query),
+        String URL = String.format("http://ajax.googleapis.com/ajax/services/search/images?imgsz=%s&rsz=8&start=%d&v=1.0&q=%s", mSearchSettings.imageSize, 0, query);
+        client.get(URL,
                 new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(JSONObject response) {
@@ -106,6 +112,17 @@ public class SearchActivity extends Activity {
                 });
     }
 
-
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            mSearchSettings = (SearchSettingsModel)data.getSerializableExtra(SEARCH_SETTINGS_EXTRA);
+            Log.i("DEBUG", "New image size is " +mSearchSettings.imageSize);
+        }
+        else if (resultCode == RESULT_CANCELED) {
+            int x = 0;
+            x++;
+            Log.i("DEBUG", "Cancelled loading image size.");
+        }
+    }
 }

@@ -20,6 +20,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.lucasr.smoothie.AsyncListView;
 
 import java.util.ArrayList;
 
@@ -39,6 +40,8 @@ public class SearchActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         setupSubviews();
+
+        AsyncListView listView;
 
         imageAdapter = new ImageResultsArrayAdapter(this, imageResults);
         gvResults.setAdapter(imageAdapter);
@@ -71,6 +74,8 @@ public class SearchActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            Intent i = new Intent(this, SearchSettingsActivity.class);
+            startActivity(i);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -100,5 +105,7 @@ public class SearchActivity extends Activity {
                     }
                 });
     }
+
+
 
 }

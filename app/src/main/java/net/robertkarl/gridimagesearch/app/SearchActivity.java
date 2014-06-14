@@ -8,9 +8,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -27,8 +27,8 @@ public class SearchActivity extends Activity {
 
     public static String SEARCH_SETTINGS_EXTRA = "net.robertkarl.searchSettings";
     private EditText etQuery;
-    private Button btnSearch;
     private GridView gvResults;
+    private SearchView mSearchView;
 
     private SearchSettingsModel mSearchSettings;
 
@@ -70,14 +70,30 @@ public class SearchActivity extends Activity {
 
     private void setupSubviews() {
         etQuery = (EditText)findViewById(R.id.etQuery);
-        btnSearch = (Button)findViewById(R.id.btnSearch);
         gvResults = (GridView)findViewById(R.id.gvResults);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search, menu);
+        setupSearchBar(menu);
         return true;
+    }
+
+    private void setupSearchBar(Menu menu) {
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        mSearchView = (SearchView) searchItem.getActionView();
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
     }
 
     @Override
@@ -110,6 +126,7 @@ public class SearchActivity extends Activity {
                         super.onSuccess(response);
                         JSONArray imageJsonResults = null;
                         try {
+                            Log.d("DEBUG", response.getJSONObject("responseData").getJSONObject("cursor").toString());
                             imageJsonResults = response.getJSONObject("responseData").getJSONArray("results");
                             imageAdapter.addAll(ImageResult.fromJSONArray(imageJsonResults));
                         }

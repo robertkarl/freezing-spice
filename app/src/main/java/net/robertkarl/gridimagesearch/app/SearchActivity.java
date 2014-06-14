@@ -49,7 +49,6 @@ public class SearchActivity extends Activity {
         gvResults.setAdapter(imageAdapter);
 
         mSearchSettings = new SearchSettingsModel();
-        mSearchSettings.imageSize = "icon";
 
         gvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -58,6 +57,13 @@ public class SearchActivity extends Activity {
                 ImageResult result = imageAdapter.getItem(position);
                 i.putExtra(FULLSCREEN_IMAGE_KEY, result);
                 startActivity(i);
+            }
+        });
+
+        gvResults.setOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                asyncAppendPageOfResults(page, etQuery.getText().toString());
             }
         });
     }
@@ -86,18 +92,17 @@ public class SearchActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onSearchClicked(View v) {
-        String query = etQuery.getText().toString();
-        Toast.makeText(this,String.format("Searching for %s", query), Toast.LENGTH_LONG).show();
+    private void asyncAppendPageOfResults(int resultsPage, String queryString) {
 
         AsyncHttpClient client = new AsyncHttpClient();
+        boolean x = mSearchSettings.imageColor.equals(null);
         String URLBase = "http://ajax.googleapis.com/ajax/services/search/images";
         String URL = URLBase + String.format("?imgtype=%s&imgcolor=%s&imgsz=%s&rsz=8&start=%d&v=1.0&q=%s",
                 mSearchSettings.imageType.equals("all") ? "" : mSearchSettings.imageType,
                 mSearchSettings.imageColor.equals("all") ? "" : mSearchSettings.imageColor,
                 mSearchSettings.imageSize.equals("all") ? "" : mSearchSettings.imageSize,
-                0,
-                query);
+                resultsPage * 8,
+                queryString);
         client.get(URL,
                 new JsonHttpResponseHandler() {
                     @Override
@@ -106,14 +111,22 @@ public class SearchActivity extends Activity {
                         JSONArray imageJsonResults = null;
                         try {
                             imageJsonResults = response.getJSONObject("responseData").getJSONArray("results");
-                            imageResults.clear();
                             imageAdapter.addAll(ImageResult.fromJSONArray(imageJsonResults));
                         }
                         catch (JSONException e) {
                             // ignore
+                            e.printStackTrace();
+                            Log.d("DEBUG", e.toString());
                         }
                     }
                 });
+    }
+
+    public void onSearchClicked(View v) {
+        String queryString = etQuery.getText().toString();
+        Toast.makeText(this,String.format("Searching for %s", queryString), Toast.LENGTH_LONG).show();
+        imageAdapter.clear();
+        asyncAppendPageOfResults(0, queryString);
     }
 
     @Override
@@ -121,12 +134,6 @@ public class SearchActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             mSearchSettings = (SearchSettingsModel)data.getSerializableExtra(SEARCH_SETTINGS_EXTRA);
-            Log.i("DEBUG", "New image size is " +mSearchSettings.imageSize);
-        }
-        else if (resultCode == RESULT_CANCELED) {
-            int x = 0;
-            x++;
-            Log.i("DEBUG", "Cancelled loading image size.");
         }
     }
 }

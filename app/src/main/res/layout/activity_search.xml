@@ -33,7 +33,7 @@
         android:layout_height="fill_parent"
         android:layout_below="@+id/btnSearch"
         android:id="@+id/gvResults"
-        android:numColumns="3"
+        android:numColumns="2"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 

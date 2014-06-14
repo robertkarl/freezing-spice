@@ -9,8 +9,8 @@
     tools:context="net.robertkarl.gridimagesearch.app.FullScreenImageActivity">
 
     <com.loopj.android.image.SmartImageView
-        android:id="@+id/ivResult"
-        android:max_width="600dp"
+        android:id="@+id/ivFullScreen"
+        android:maxWidth="600dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"

@@ -1,12 +1,14 @@
 package net.robertkarl.gridimagesearch.app;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -27,6 +29,8 @@ public class SearchActivity extends Activity {
     private Button btnSearch;
     private GridView gvResults;
 
+    public static String FULLSCREEN_IMAGE_KEY = "fullImageURL";
+
     ArrayList<ImageResult> imageResults = new ArrayList<ImageResult>();
     ImageResultsArrayAdapter imageAdapter;
 
@@ -39,7 +43,15 @@ public class SearchActivity extends Activity {
         imageAdapter = new ImageResultsArrayAdapter(this, imageResults);
         gvResults.setAdapter(imageAdapter);
 
-    gvResults.
+        gvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent(getApplicationContext(), FullScreenImageActivity.class);
+                ImageResult result = imageAdapter.getItem(position);
+                i.putExtra(FULLSCREEN_IMAGE_KEY, result);
+                startActivity(i);
+            }
+        });
 
     }
 

@@ -49,7 +49,7 @@ public class SearchActivity extends Activity {
         gvResults.setAdapter(imageAdapter);
 
         mSearchSettings = new SearchSettingsModel();
-        mSearchSettings.imageSize = "small";
+        mSearchSettings.imageSize = "icon";
 
         gvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

@@ -22,7 +22,6 @@ public class SearchSettingsActivity extends Activity {
         mSearchSettings = (SearchSettingsModel)getIntent().getSerializableExtra(SearchActivity.SEARCH_SETTINGS_EXTRA);
 
         setupSizeSpinner();
-
     }
 
     private void setupSizeSpinner() {
@@ -30,6 +29,9 @@ public class SearchSettingsActivity extends Activity {
         imageSizeAdapter = ArrayAdapter.createFromResource(this,
                 R.array.image_sizes, android.R.layout.simple_spinner_item);
         imageSizeSpinner.setAdapter(imageSizeAdapter);
+
+        int startIndex = indexForItem(mSearchSettings.imageSize);
+        imageSizeSpinner.setSelection(startIndex);
 
         imageSizeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -42,6 +44,16 @@ public class SearchSettingsActivity extends Activity {
 
             }
         });
+
+    }
+
+    int indexForItem(String item) {
+        for (int i = 0; i < imageSizeAdapter.getCount(); i++) {
+            if (imageSizeAdapter.getItem(i).equals(item)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -49,8 +61,7 @@ public class SearchSettingsActivity extends Activity {
         Intent answer = new Intent();
         answer.putExtra(SearchActivity.SEARCH_SETTINGS_EXTRA, mSearchSettings);
         setResult(RESULT_OK, answer);
-        finish();
-
+        super.onBackPressed();
     }
 
     @Override

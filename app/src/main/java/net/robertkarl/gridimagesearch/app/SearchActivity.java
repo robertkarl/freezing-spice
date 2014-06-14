@@ -91,7 +91,13 @@ public class SearchActivity extends Activity {
         Toast.makeText(this,String.format("Searching for %s", query), Toast.LENGTH_LONG).show();
 
         AsyncHttpClient client = new AsyncHttpClient();
-        String URL = String.format("http://ajax.googleapis.com/ajax/services/search/images?imgsz=%s&rsz=8&start=%d&v=1.0&q=%s", mSearchSettings.imageSize, 0, query);
+        String URLBase = "http://ajax.googleapis.com/ajax/services/search/images";
+        String URL = URLBase + String.format("?imgtype=%s&imgcolor=%s&imgsz=%s&rsz=8&start=%d&v=1.0&q=%s",
+                mSearchSettings.imageType,
+                mSearchSettings.imageColor,
+                mSearchSettings.imageSize,
+                0,
+                query);
         client.get(URL,
                 new JsonHttpResponseHandler() {
                     @Override
@@ -102,8 +108,6 @@ public class SearchActivity extends Activity {
                             imageJsonResults = response.getJSONObject("responseData").getJSONArray("results");
                             imageResults.clear();
                             imageAdapter.addAll(ImageResult.fromJSONArray(imageJsonResults));
-
-                            Log.d("DEBUG", imageResults.toString());
                         }
                         catch (JSONException e) {
                             // ignore

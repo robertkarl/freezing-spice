@@ -28,15 +28,25 @@ public class SearchActivity extends Activity {
     private GridView gvResults;
 
     ArrayList<ImageResult> imageResults = new ArrayList<ImageResult>();
+    ImageResultsArrayAdapter imageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        setupSubviews();
+
+        imageAdapter = new ImageResultsArrayAdapter(this, imageResults);
+        gvResults.setAdapter(imageAdapter);
+
+    gvResults.
+
+    }
+
+    private void setupSubviews() {
         etQuery = (EditText)findViewById(R.id.etQuery);
         btnSearch = (Button)findViewById(R.id.btnSearch);
         gvResults = (GridView)findViewById(R.id.gvResults);
-
     }
 
     @Override
@@ -68,7 +78,8 @@ public class SearchActivity extends Activity {
                         try {
                             imageJsonResults = response.getJSONObject("responseData").getJSONArray("results");
                             imageResults.clear();
-                            imageResults.addAll(ImageResult.fromJSONArray(imageJsonResults));
+                            imageAdapter.addAll(ImageResult.fromJSONArray(imageJsonResults));
+
                             Log.d("DEBUG", imageResults.toString());
                         }
                         catch (JSONException e) {

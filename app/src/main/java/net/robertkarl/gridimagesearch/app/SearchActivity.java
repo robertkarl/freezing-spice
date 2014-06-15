@@ -8,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -19,14 +18,12 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.lucasr.smoothie.AsyncListView;
 
 import java.util.ArrayList;
 
 public class SearchActivity extends Activity {
 
     public static String SEARCH_SETTINGS_EXTRA = "net.robertkarl.searchSettings";
-    private EditText etQuery;
     private GridView gvResults;
     private SearchView mSearchView;
 
@@ -42,8 +39,6 @@ public class SearchActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         setupSubviews();
-
-        AsyncListView listView;
 
         imageAdapter = new ImageResultsArrayAdapter(this, imageResults);
         gvResults.setAdapter(imageAdapter);
@@ -63,13 +58,12 @@ public class SearchActivity extends Activity {
         gvResults.setOnScrollListener(new EndlessScrollListener() {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                asyncAppendPageOfResults(page, etQuery.getText().toString());
+                asyncAppendPageOfResults(page, mSearchView.getQuery().toString());
             }
         });
     }
 
     private void setupSubviews() {
-        etQuery = (EditText)findViewById(R.id.etQuery);
         gvResults = (GridView)findViewById(R.id.gvResults);
     }
 
@@ -81,11 +75,13 @@ public class SearchActivity extends Activity {
     }
 
     private void setupSearchBar(Menu menu) {
-        MenuItem searchItem = menu.findItem(R.id.action_search);
+        final MenuItem searchItem = menu.findItem(R.id.action_search);
         mSearchView = (SearchView) searchItem.getActionView();
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                mSearchView.clearFocus();
+                onSearchClicked();
                 return true;
             }
 
@@ -139,8 +135,8 @@ public class SearchActivity extends Activity {
                 });
     }
 
-    public void onSearchClicked(View v) {
-        String queryString = etQuery.getText().toString();
+    public void onSearchClicked() {
+        String queryString = mSearchView.getQuery().toString();
         Toast.makeText(this,String.format("Searching for %s", queryString), Toast.LENGTH_LONG).show();
         imageAdapter.clear();
         asyncAppendPageOfResults(0, queryString);

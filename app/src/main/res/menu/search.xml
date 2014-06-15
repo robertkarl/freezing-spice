@@ -5,7 +5,7 @@
         android:title="@string/action_settings"
         android:icon="@drawable/ic_gear"
         android:orderInCategory="100"
-        android:showAsAction="ifRoom" />
+        android:showAsAction="always" />
     <item android:id="@+id/action_search"
         android:orderInCategory="5"
         android:title="Search"

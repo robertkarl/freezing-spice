@@ -3,6 +3,7 @@ package net.robertkarl.gridimagesearch.app;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,6 +15,8 @@ import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
+
+import net.robertkarl.gridimagesearch.app.util.Connectivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,6 +64,51 @@ public class SearchActivity extends Activity {
                 asyncAppendPageOfResults(page, mSearchView.getQuery().toString());
             }
         });
+        checkBackForAConnection(0);
+    }
+
+    /**
+     * Safe to call from any thread
+     * @param visible true if the Error state should be shown
+     */
+    void setErrorStateVisibility(final boolean visible) {
+        SearchActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                View errorView = findViewById(R.id.tvEmptyState);
+                if (visible) {
+                    errorView.setVisibility(View.VISIBLE);
+                    gvResults.setVisibility(View.GONE);
+                }
+                else {
+                    errorView.setVisibility(View.GONE);
+                    gvResults.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+    }
+
+    /**
+     * Perform exponential backoff checking for internet connectivity
+     * @param delay milliseconds later for initial check.
+     */
+    private void checkBackForAConnection(final int delay) {
+        Log.d("DEBUG", "Checking connectivity");
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (Connectivity.pingGoogleSynchronous()) {
+                    setErrorStateVisibility(false);
+                }
+                else {
+                    Log.d("DEBUG", String.format("Checking server connection in %d millis", delay * 2));
+                    checkBackForAConnection(delay == 0 ? 500 : delay * 2);
+                    setErrorStateVisibility(true);
+                }
+            }
+        }, delay);
     }
 
     private void setupSubviews() {

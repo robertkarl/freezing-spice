@@ -9,11 +9,19 @@ import android.view.View;
 
 import java.io.InputStream;
 
+/**
+ * Draw a gif onscreen
+ * Courtesy of http://droid-blog.net/2011/10/14/tutorial-how-to-use-animated-gifs-in-android-part-1/
+ */
 public class GifMovieView extends View {
 
     private Movie mMovie;
     private long mMoviestart;
 
+    /**
+     *
+     * @param stream open stream for a gif file from assets
+     */
     public GifMovieView(Context context, InputStream stream) {
         super(context);
         mMovie = Movie.decodeStream(stream);

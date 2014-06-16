@@ -17,6 +17,7 @@
         android:maxWidth="50dp"
         android:paddingRight="8dp"
         android:gravity="right"
+        android:layout_weight="1"
         android:id="@+id/historyRowSearchPreview"/>
 
 </LinearLayout>

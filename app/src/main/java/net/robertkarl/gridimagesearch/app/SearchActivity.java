@@ -364,6 +364,11 @@ public class SearchActivity extends Activity {
         else {
             hideErrorStates();
             imageAdapter.addAll(imageResults);
+        }
+    }
+
+    void adjustHistoryItemWithThumbnail(String thumbnail) {
+        if (getCurrentHistoryItem().thumbnailURL == null) {
             getCurrentHistoryItem().thumbnailURL = imageResults.get(0).getThumbURL();
             searchHistoryAdapter.notifyDataSetChanged();
         }

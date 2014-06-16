@@ -6,17 +6,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.origamilabs.library.views.StaggeredGridView;
 
 import net.robertkarl.gridimagesearch.app.util.Connectivity;
 
@@ -31,7 +31,7 @@ import java.util.ArrayList;
 public class SearchActivity extends Activity {
 
     public static String SEARCH_SETTINGS_EXTRA = "net.robertkarl.searchSettings";
-    private GridView gvResults;
+    private StaggeredGridView gvResults;
     private SearchView mSearchView;
     private GifMovieView mGearsView;
 
@@ -45,6 +45,7 @@ public class SearchActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_search);
         setupSubviews();
 
@@ -52,23 +53,30 @@ public class SearchActivity extends Activity {
         gvResults.setAdapter(imageAdapter);
 
         mSearchSettings = new SearchSettingsModel();
-
-        gvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        gvResults.setOnItemClickListener(new StaggeredGridView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(StaggeredGridView parent, View view, int position, long id) {
                 Intent i = new Intent(getApplicationContext(), FullScreenImageActivity.class);
                 ImageResult result = imageAdapter.getItem(position);
                 i.putExtra(FULLSCREEN_IMAGE_KEY, result);
                 startActivity(i);
             }
         });
-
-        gvResults.setOnScrollListener(new EndlessScrollListener() {
+        gvResults.setOnDragListener(new View.OnDragListener() {
             @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                asyncAppendPageOfResults(page, mSearchView.getQuery().toString());
+            public boolean onDrag(View v, DragEvent event) {
+                return false;
             }
         });
+
+
+        /// TODO re enable scrolling
+//        gvResults.setOnScrollListener(new EndlessScrollListener() {
+//            @Override
+//            public void onLoadMore(int page, int totalItemsCount) {
+//                asyncAppendPageOfResults(page, mSearchView.getQuery().toString());
+//            }
+//        });
 
         /// Don't check for connectivity in the emulator -- ping does not work there
         if (!Build.FINGERPRINT.startsWith("generic")) {
@@ -148,7 +156,7 @@ public class SearchActivity extends Activity {
     }
 
     private void setupSubviews() {
-        gvResults = (GridView)findViewById(R.id.gvResults);
+        gvResults = (StaggeredGridView)findViewById(R.id.gvResults);
     }
 
     @Override
@@ -188,7 +196,7 @@ public class SearchActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void asyncAppendPageOfResults(int resultsPage, String queryString) {
+    private void asyncAppendPageOfResults(final int resultsPage, final String queryString) {
 
         AsyncHttpClient client = new AsyncHttpClient();
         boolean x = mSearchSettings.imageColor.equals(null);
@@ -209,11 +217,15 @@ public class SearchActivity extends Activity {
                             Log.d("DEBUG", response.getJSONObject("responseData").getJSONObject("cursor").toString());
                             imageJsonResults = response.getJSONObject("responseData").getJSONArray("results");
                             imageAdapter.addAll(ImageResult.fromJSONArray(imageJsonResults));
+                            if (resultsPage + 1 < 8) {
+                                asyncAppendPageOfResults((resultsPage + 1), queryString);
+                            }
                         }
                         catch (JSONException e) {
                             // ignore
                             e.printStackTrace();
-                            Log.d("DEBUG", e.toString());
+                            Log.e("DEBUG", "Failed to return an object");
+                            Log.e("DEBUG", response.toString());
                         }
                     }
                 });

@@ -23,6 +23,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 
 import net.robertkarl.gridimagesearch.app.settings.SearchSettingsActivity;
 import net.robertkarl.gridimagesearch.app.settings.SearchSettingsModel;
+import net.robertkarl.gridimagesearch.app.swipetodismiss.SwipeDismissListViewTouchListener;
 import net.robertkarl.gridimagesearch.app.util.Connectivity;
 
 import org.json.JSONArray;
@@ -39,6 +40,7 @@ public class SearchActivity extends Activity {
     private GridView gvResults;
     private SearchView mSearchView;
     private GifMovieView mGearsView;
+    private GifMovieView mEmptyStateGif;
     private ActionBarDrawerToggle mDrawerToggle;
 
     private SearchSettingsModel mSearchSettings;
@@ -96,11 +98,11 @@ public class SearchActivity extends Activity {
 
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(
-                this,                  /* host Activity */
-                drawerLayout,         /* DrawerLayout object */
+                this,
+                drawerLayout,
                 R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
-                R.string.drawer_open,  /* "open drawer" description */
-                R.string.drawer_close  /* "close drawer" description */
+                R.string.drawer_open,
+                R.string.drawer_close
         ) {
 
             /** Called when a drawer has settled in a completely closed state. */
@@ -131,8 +133,6 @@ public class SearchActivity extends Activity {
 
             @Override
             public void onDismiss(ListView listView, int[] reverseSortedPositions) {
-                int x = 0;
-                x++;
                 for (int i : reverseSortedPositions) {
                     searchHistoryAdapter.remove(searchHistoryAdapter.getItem(i));
                 }
@@ -159,7 +159,7 @@ public class SearchActivity extends Activity {
         SearchActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                LinearLayout errorView = (LinearLayout)findViewById(R.id.llEmptyState);
+                LinearLayout errorView = (LinearLayout)findViewById(R.id.llErrorState);
                 if (visible) {
                     errorView.setVisibility(View.VISIBLE);
                     gvResults.setVisibility(View.GONE);
@@ -175,17 +175,44 @@ public class SearchActivity extends Activity {
                 }
             }
         });
-
     }
+
+    /**
+     * Safe to call from any thread
+     * @param visible true if the empty (no results) state should be shown
+     */
+    void setEmptyStateVisibility(final boolean visible) {
+        SearchActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                LinearLayout errorView = (LinearLayout)findViewById(R.id.llEmptyState);
+                if (visible) {
+                    errorView.setVisibility(View.VISIBLE);
+                    gvResults.setVisibility(View.GONE);
+                    addEmptyStateGifIfNeeded();
+                }
+                else {
+                    errorView.setVisibility(View.GONE);
+                    gvResults.setVisibility(View.VISIBLE);
+                    if (mEmptyStateGif != null) {
+                        errorView.removeView(mEmptyStateGif);
+                        mEmptyStateGif = null;
+                    }
+                }
+            }
+        });
+    }
+
 
     void addGearsViewIfNeeded() {
         if (mGearsView == null) {
             mGearsView = newGearsGif();
             mGearsView.setLayoutParams(new LinearLayout.LayoutParams(344, 341));
-            LinearLayout emptyStateContainer = (LinearLayout)findViewById(R.id.llEmptyState);
+            LinearLayout emptyStateContainer = (LinearLayout)findViewById(R.id.llErrorState);
             emptyStateContainer.addView(mGearsView);
         }
     }
+
 
     GifMovieView newGearsGif() {
         InputStream stream;
@@ -199,6 +226,29 @@ public class SearchActivity extends Activity {
         GifMovieView gifView = new GifMovieView(this, stream);
         return gifView;
     }
+
+    void addEmptyStateGifIfNeeded() {
+        if (mEmptyStateGif == null) {
+            mEmptyStateGif = newEmptyStateGif();
+            mEmptyStateGif.setLayoutParams(new LinearLayout.LayoutParams(500, 500));
+            LinearLayout emptyStateContainer = (LinearLayout)findViewById(R.id.llEmptyState);
+            emptyStateContainer.addView(mEmptyStateGif);
+        }
+    }
+
+    GifMovieView newEmptyStateGif() {
+        InputStream stream;
+        try {
+            stream = getAssets().open("bulging_stripes.gif");
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        GifMovieView gifView = new GifMovieView(this, stream);
+        return gifView;
+    }
+
 
     /**
      * Perform exponential backoff checking for internet connectivity
@@ -286,7 +336,7 @@ public class SearchActivity extends Activity {
                         try {
                             Log.d("DEBUG", response.getJSONObject("responseData").getJSONObject("cursor").toString());
                             imageJsonResults = response.getJSONObject("responseData").getJSONArray("results");
-                            imageAdapter.addAll(ImageResult.fromJSONArray(imageJsonResults));
+                            onImagesReceived(ImageResult.fromJSONArray(imageJsonResults));
                         }
                         catch (JSONException e) {
                             // ignore
@@ -295,6 +345,32 @@ public class SearchActivity extends Activity {
                         }
                     }
                 });
+    }
+
+    private void hideErrorStates() {
+        setErrorStateVisibility(false);
+        setEmptyStateVisibility(false);
+    }
+
+    private void showEmptyState() {
+        setErrorStateVisibility(false);
+        setEmptyStateVisibility(true);
+    }
+
+    private void onImagesReceived(ArrayList<? extends ImageResult> imageResults) {
+        if (imageResults.isEmpty()) {
+            showEmptyState();
+        }
+        else {
+            hideErrorStates();
+            imageAdapter.addAll(imageResults);
+            getCurrentHistoryItem().thumbnailURL = imageResults.get(0).getThumbURL();
+            searchHistoryAdapter.notifyDataSetChanged();
+        }
+    }
+
+    SearchHistoryModel getCurrentHistoryItem() {
+        return searchHistoryAdapter.getItem(searchHistoryAdapter.getCount() - 1);
     }
 
     public void onSearchClicked() {

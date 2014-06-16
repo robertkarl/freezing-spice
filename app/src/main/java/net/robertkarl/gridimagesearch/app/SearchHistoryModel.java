@@ -8,4 +8,5 @@ import net.robertkarl.gridimagesearch.app.settings.SearchSettingsModel;
 public class SearchHistoryModel {
     public SearchSettingsModel searchSettings;
     public String query;
+    public String thumbnailURL;
 }

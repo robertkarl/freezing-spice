@@ -29,3 +29,13 @@ Extra
 
 
 #### GIF Walkthrough
+
+
+#### Test Plan
+- Run a search with internet disabled. Error state should be displayed.
+- Re-enable internet.
+- Error state should disappear.
+
+- Run a search that returns zero results, like "asdfasdfqqqqewrt"
+- Empty state view should appear.
+- Run a search that returns results. _expected result_ results should appear and empty state disappears.

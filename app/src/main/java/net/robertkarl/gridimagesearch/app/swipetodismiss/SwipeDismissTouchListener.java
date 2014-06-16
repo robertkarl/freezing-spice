@@ -1,4 +1,4 @@
-package net.robertkarl.gridimagesearch.app;
+package net.robertkarl.gridimagesearch.app.swipetodismiss;
 /*
  * Copyright 2013 Google Inc.
  *

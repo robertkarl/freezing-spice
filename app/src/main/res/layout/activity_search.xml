@@ -21,13 +21,39 @@
             android:orientation="vertical"
             android:layout_gravity="center_horizontal"
             android:visibility="gone"
-            android:id="@+id/llEmptyState">
+            android:id="@+id/llErrorState">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tvEmptyState"
-                android:text="@string/empty_state_main"/>
+                android:id="@+id/tvErrorState"
+                android:text="@string/error_state_main"/>
             </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone"
+            android:id="@+id/llEmptyState">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="24sp"
+                    android:textStyle="italic"
+                    android:fontFamily="sans-serif-light"
+                    android:text="@string/empty_state_maintext"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
+                    android:text="@string/empty_state_subtext"/>
+                </LinearLayout>
+        </LinearLayout>
     </FrameLayout>
     <ListView android:id="@+id/left_drawer"
         android:layout_width="240dp"

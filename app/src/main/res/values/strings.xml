@@ -5,8 +5,11 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_full_screen_image">Image Details</string>
     <string name="title_activity_search_settings">Search Settings</string>
-    <string name="empty_state_main">No Connection</string>
+    <string name="error_state_main">No Connection</string>
     <string name="drawer_open">Search History</string>
     <string name="drawer_close">Results</string>
 
+
+    <string name="empty_state_maintext">You broke the internet</string>
+    <string name="empty_state_subtext">No Results Found</string>
 </resources>

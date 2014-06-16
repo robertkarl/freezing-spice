@@ -1,4 +1,4 @@
-package net.robertkarl.gridimagesearch.app;
+package net.robertkarl.gridimagesearch.app.swipetodismiss;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

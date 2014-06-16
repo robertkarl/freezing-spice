@@ -10,10 +10,17 @@ android {
         versionCode 1
         versionName '1.0'
     }
+    signingConfigs {
+        release {
+            storeFile file("RK-release-key.keystore")
+            keyAlias "RK_TOOL"
+        }
+    }
     buildTypes {
         release {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     productFlavors {

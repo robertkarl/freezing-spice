@@ -4,9 +4,8 @@
     android:layout_height="match_parent"
     tools:context="net.robertkarl.gridimagesearch.app.FullScreenImageActivity">
 
-    <net.robertkarl.gridimagesearch.app.SmartImageView
+    <net.robertkarl.gridimagesearch.app.SmarterImageView
         android:id="@+id/ivFullScreen"
-        android:maxWidth="600dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"

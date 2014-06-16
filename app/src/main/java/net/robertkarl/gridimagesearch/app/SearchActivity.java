@@ -89,10 +89,6 @@ public class SearchActivity extends Activity {
 
     private void setupSideNav() {
         searchHistoryAdapter = new SearchHistoryAdapter(this, new ArrayList<SearchHistoryModel>());
-        SearchHistoryModel searchItem = new SearchHistoryModel();
-        searchItem.query = "whatev";
-        searchItem.searchSettings = new SearchSettingsModel();
-        searchHistoryAdapter.add(searchItem);
 
         ListView sideNav = (ListView)findViewById(R.id.left_drawer);
         sideNav.setAdapter(searchHistoryAdapter);
@@ -125,6 +121,26 @@ public class SearchActivity extends Activity {
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
+
+
+        sideNav.setOnTouchListener(new SwipeDismissListViewTouchListener(sideNav, new SwipeDismissListViewTouchListener.DismissCallbacks() {
+            @Override
+            public boolean canDismiss(int position) {
+                return true;
+            }
+
+            @Override
+            public void onDismiss(ListView listView, int[] reverseSortedPositions) {
+                int x = 0;
+                x++;
+                for (int i : reverseSortedPositions) {
+                    searchHistoryAdapter.remove(searchHistoryAdapter.getItem(i));
+                }
+                searchHistoryAdapter.notifyDataSetChanged();
+            }
+        }));
+
+
     }
 
     @Override

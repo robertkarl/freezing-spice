@@ -1,6 +1,7 @@
 package net.robertkarl.gridimagesearch.app;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,7 @@ public class SearchHistoryAdapter extends ArrayAdapter<SearchHistoryModel> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        SearchHistoryModel search = getItem(position);
+        final SearchHistoryModel search = getItem(position);
         TextView tvSearchRow;
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -27,6 +28,20 @@ public class SearchHistoryAdapter extends ArrayAdapter<SearchHistoryModel> {
         else {
             tvSearchRow = (TextView)convertView;
         }
+        tvSearchRow.setOnTouchListener(new SwipeDismissTouchListener(tvSearchRow, null, new SwipeDismissTouchListener.DismissCallbacks() {
+            @Override
+            public boolean canDismiss(Object token) {
+                return true;
+            }
+
+            @Override
+            public void onDismiss(View view, Object token) {
+                SearchHistoryAdapter.this.remove(search);
+                Log.d("DEBUG", String.format("Dismissing item. %s", token.toString()));
+                SearchHistoryAdapter.this.notifyDataSetChanged();
+            }
+
+        }));
 
         tvSearchRow.setText(search.query);
         return tvSearchRow;

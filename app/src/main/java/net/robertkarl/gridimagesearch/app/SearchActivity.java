@@ -284,7 +284,7 @@ public class SearchActivity extends Activity {
     }
 
     private void setupSearchBar(Menu menu) {
-        final MenuItem searchItem = menu.findItem(R.id.action_search);
+        final MenuItem searchItem = menu.findItem(R.id.btnSearch);
         mSearchView = (SearchView) searchItem.getActionView();
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

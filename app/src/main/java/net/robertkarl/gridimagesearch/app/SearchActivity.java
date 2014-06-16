@@ -165,7 +165,7 @@ public class SearchActivity extends Activity {
     void addGearsViewIfNeeded() {
         if (mGearsView == null) {
             mGearsView = newGearsGif();
-            mGearsView.setLayoutParams(new LinearLayout.LayoutParams(240, 400));
+            mGearsView.setLayoutParams(new LinearLayout.LayoutParams(344, 341));
             LinearLayout emptyStateContainer = (LinearLayout)findViewById(R.id.llEmptyState);
             emptyStateContainer.addView(mGearsView);
         }
@@ -174,7 +174,7 @@ public class SearchActivity extends Activity {
     GifMovieView newGearsGif() {
         InputStream stream;
         try {
-            stream = getAssets().open("android_particles.gif");
+            stream = getAssets().open("gears.gif");
         }
         catch (IOException e) {
             e.printStackTrace();

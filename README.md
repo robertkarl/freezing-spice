@@ -23,5 +23,9 @@ Optionals
 - [ ] Use the StaggeredGridView. Implemented this but did not get good results. Poor scroll performance with SmartImageView.
 - [x]  User can zoom or pan images displayed in full-screen detail view
 
+Extra
+- [x] Use an animated gif for the error state. Value add to the user? Marginal at best. 
+
+
 
 #### GIF Walkthrough

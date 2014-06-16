@@ -2,6 +2,7 @@ package net.robertkarl.gridimagesearch.app;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -22,6 +24,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class SearchActivity extends Activity {
@@ -29,6 +33,7 @@ public class SearchActivity extends Activity {
     public static String SEARCH_SETTINGS_EXTRA = "net.robertkarl.searchSettings";
     private GridView gvResults;
     private SearchView mSearchView;
+    private GifMovieView mGearsView;
 
     private SearchSettingsModel mSearchSettings;
 
@@ -64,7 +69,11 @@ public class SearchActivity extends Activity {
                 asyncAppendPageOfResults(page, mSearchView.getQuery().toString());
             }
         });
-        checkBackForAConnection(0);
+
+        /// Don't check for connectivity in the emulator -- ping does not work there
+        if (!Build.FINGERPRINT.startsWith("generic")) {
+            checkBackForAConnection(0);
+        }
     }
 
     /**
@@ -75,18 +84,45 @@ public class SearchActivity extends Activity {
         SearchActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                View errorView = findViewById(R.id.tvEmptyState);
+                LinearLayout errorView = (LinearLayout)findViewById(R.id.llEmptyState);
                 if (visible) {
                     errorView.setVisibility(View.VISIBLE);
                     gvResults.setVisibility(View.GONE);
+                    addGearsViewIfNeeded();
                 }
                 else {
                     errorView.setVisibility(View.GONE);
                     gvResults.setVisibility(View.VISIBLE);
+                    if (mGearsView != null) {
+                        errorView.removeView(mGearsView);
+                        mGearsView = null;
+                    }
                 }
             }
         });
 
+    }
+
+    void addGearsViewIfNeeded() {
+        if (mGearsView == null) {
+            mGearsView = newGearsGif();
+            mGearsView.setLayoutParams(new LinearLayout.LayoutParams(240, 400));
+            LinearLayout emptyStateContainer = (LinearLayout)findViewById(R.id.llEmptyState);
+            emptyStateContainer.addView(mGearsView);
+        }
+    }
+
+    GifMovieView newGearsGif() {
+        InputStream stream;
+        try {
+            stream = getAssets().open("android_particles.gif");
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        GifMovieView gifView = new GifMovieView(this, stream);
+        return gifView;
     }
 
     /**

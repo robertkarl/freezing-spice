@@ -11,11 +11,18 @@
         android:numColumns="2"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center_horizontal"
         android:visibility="gone"
-        android:id="@+id/tvEmptyState"
-        android:text="@string/empty_state_main"/>
+        android:id="@+id/llEmptyState">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvEmptyState"
+            android:text="@string/empty_state_main"/>
+        </LinearLayout>
 
 </FrameLayout>

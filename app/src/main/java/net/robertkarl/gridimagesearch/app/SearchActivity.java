@@ -286,6 +286,11 @@ public class SearchActivity extends Activity {
         Toast.makeText(this,String.format("Searching for %s", queryString), Toast.LENGTH_LONG).show();
         imageAdapter.clear();
         asyncAppendPageOfResults(0, queryString);
+
+        SearchHistoryModel search = new SearchHistoryModel();
+        search.query = queryString;
+        search.searchSettings = mSearchSettings;
+        searchHistoryAdapter.add(search);
     }
 
     @Override

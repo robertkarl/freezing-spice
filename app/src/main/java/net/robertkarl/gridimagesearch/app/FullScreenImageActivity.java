@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.ShareActionProvider;
 
 import com.loopj.android.image.SmartImageTask;
-import com.loopj.android.image.SmartImageView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,7 +26,7 @@ import java.io.IOException;
 public class FullScreenImageActivity extends Activity {
 
     ImageResult imageResult;
-    private SmartImageView mFullScreenImage;
+    private SmarterImageView mFullScreenImage;
     private ShareActionProvider mShareActionProvider;
 
     @Override
@@ -36,7 +35,7 @@ public class FullScreenImageActivity extends Activity {
         setContentView(R.layout.activity_full_screen_image);
 
         imageResult = (ImageResult)getIntent().getSerializableExtra(SearchActivity.FULLSCREEN_IMAGE_KEY);
-        mFullScreenImage = (SmartImageView)findViewById(R.id.ivFullScreen);
+        mFullScreenImage = (SmarterImageView)findViewById(R.id.ivFullScreen);
 
         mFullScreenImage.setImageUrl(imageResult.getFullURL(), new SmartImageTask.OnCompleteListener() {
             @Override

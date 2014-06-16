@@ -24,7 +24,7 @@
             android:label="@string/title_activity_full_screen_image" >
         </activity>
         <activity
-            android:name=".SearchSettingsActivity"
+            android:name=".settings.SearchSettingsActivity"
             android:label="@string/title_activity_search_settings" >
         </activity>
     </application>

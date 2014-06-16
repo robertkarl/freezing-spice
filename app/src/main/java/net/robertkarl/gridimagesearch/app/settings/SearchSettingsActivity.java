@@ -1,4 +1,4 @@
-package net.robertkarl.gridimagesearch.app;
+package net.robertkarl.gridimagesearch.app.settings;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,6 +11,9 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+
+import net.robertkarl.gridimagesearch.app.R;
+import net.robertkarl.gridimagesearch.app.SearchActivity;
 
 import java.util.ArrayList;
 

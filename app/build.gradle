@@ -2,20 +2,21 @@ apply plugin: 'android'
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.1.0"
-
+    buildToolsVersion '19.1.0'
     defaultConfig {
-        applicationId "net.robertkarl.gridimagesearch.app"
+        applicationId 'net.robertkarl.gridimagesearch.app'
         minSdkVersion 14
         targetSdkVersion 19
         versionCode 1
-        versionName "1.0"
+        versionName '1.0'
     }
     buildTypes {
         release {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    productFlavors {
     }
 }
 
@@ -25,4 +26,5 @@ dependencies {
     compile files('libs/android-async-http-1.4.4.jar')
     compile 'org.lucasr.smoothie:smoothie:0.1.0'
     compile files('libs/android-smart-image-view-3-27-14.jar')
+    compile 'com.android.support:support-v4:+'
 }

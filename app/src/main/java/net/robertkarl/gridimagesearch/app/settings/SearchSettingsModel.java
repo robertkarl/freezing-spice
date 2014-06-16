@@ -1,4 +1,4 @@
-package net.robertkarl.gridimagesearch.app;
+package net.robertkarl.gridimagesearch.app.settings;
 
 import java.io.Serializable;
 

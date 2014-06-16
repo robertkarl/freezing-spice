@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,12 +14,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
+import net.robertkarl.gridimagesearch.app.settings.SearchSettingsActivity;
+import net.robertkarl.gridimagesearch.app.settings.SearchSettingsModel;
 import net.robertkarl.gridimagesearch.app.util.Connectivity;
 
 import org.json.JSONArray;
@@ -34,6 +39,7 @@ public class SearchActivity extends Activity {
     private GridView gvResults;
     private SearchView mSearchView;
     private GifMovieView mGearsView;
+    private ActionBarDrawerToggle mDrawerToggle;
 
     private SearchSettingsModel mSearchSettings;
 
@@ -42,11 +48,16 @@ public class SearchActivity extends Activity {
     ArrayList<ImageResult> imageResults = new ArrayList<ImageResult>();
     ImageResultsArrayAdapter imageAdapter;
 
+    SearchHistoryAdapter searchHistoryAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActionBar().setDisplayHomeAsUpEnabled(false);
         setContentView(R.layout.activity_search);
         setupSubviews();
+
+        setupSideNav();
 
         imageAdapter = new ImageResultsArrayAdapter(this, imageResults);
         gvResults.setAdapter(imageAdapter);
@@ -75,6 +86,54 @@ public class SearchActivity extends Activity {
             checkBackForAConnection(0);
         }
     }
+
+    private void setupSideNav() {
+        searchHistoryAdapter = new SearchHistoryAdapter(this, new ArrayList<SearchHistoryModel>());
+        SearchHistoryModel searchItem = new SearchHistoryModel();
+        searchItem.query = "whatev";
+        searchItem.searchSettings = new SearchSettingsModel();
+        searchHistoryAdapter.add(searchItem);
+
+        ListView sideNav = (ListView)findViewById(R.id.left_drawer);
+        sideNav.setAdapter(searchHistoryAdapter);
+
+
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,                  /* host Activity */
+                drawerLayout,         /* DrawerLayout object */
+                R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
+                R.string.drawer_open,  /* "open drawer" description */
+                R.string.drawer_close  /* "close drawer" description */
+        ) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                getActionBar().setTitle(R.string.drawer_close);
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                getActionBar().setTitle(R.string.drawer_open);
+            }
+        };
+
+        // Set the drawer toggle as the DrawerListener
+        drawerLayout.setDrawerListener(mDrawerToggle);
+
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+
 
     /**
      * Safe to call from any thread
@@ -179,6 +238,9 @@ public class SearchActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
         if (id == R.id.action_settings) {
             Intent i = new Intent(this, SearchSettingsActivity.class);
             i.putExtra(SearchActivity.SEARCH_SETTINGS_EXTRA, mSearchSettings);

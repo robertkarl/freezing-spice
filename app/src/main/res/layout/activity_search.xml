@@ -29,39 +29,56 @@
                 android:id="@+id/tvErrorState"
                 android:text="@string/error_state_main"/>
             </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:layout_gravity="center_horizontal"
+            android:iconifiedByDefault="false"
             android:visibility="gone"
             android:id="@+id/llEmptyState">
-            <LinearLayout
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:textSize="24sp"
-                    android:textStyle="italic"
-                    android:fontFamily="sans-serif-light"
-                    android:text="@string/empty_state_maintext"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:text="@string/empty_state_subtext"/>
-                </LinearLayout>
-        </LinearLayout>
+                android:textSize="36sp"
+                android:textStyle="italic"
+                android:gravity="center_horizontal"
+                android:layout_above="@+id/tvEmptyStateSubtext"
+                android:fontFamily="sans-serif-light"
+                android:text="@string/empty_state_maintext"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvEmptyStateSubtext"
+                android:fontFamily="sans-serif-light"
+                android:layout_centerInParent="true"
+                android:gravity="center_horizontal"
+                android:textSize="48sp"
+                android:text="@string/empty_state_subtext"/>
+        </RelativeLayout>
     </FrameLayout>
-    <ListView android:id="@+id/left_drawer"
+    <LinearLayout
+        android:focusable="true"
         android:layout_width="280dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:choiceMode="singleChoice"
-        android:divider="#d3d3d3"
-        android:dividerHeight="1dp"
-        android:background="#c3c3c3"/>
+        android:background="#c3c3c3"
+        android:orientation="vertical">
+        <requestFocus />
+        <SearchView
+            android:focusable="true"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/svImageQuery"
+            android:iconifiedByDefault="false"
+            android:queryHint="Search images">
+            <requestFocus />
+            </SearchView>
+        <ListView android:id="@+id/left_drawer"
+                android:layout_width="280dp"
+                android:layout_height="match_parent"
+                android:choiceMode="singleChoice"
+                android:divider="#d3d3d3"
+                android:dividerHeight="1dp"/>
+        </LinearLayout>
 </android.support.v4.widget.DrawerLayout>

@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -30,8 +32,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 public class SearchActivity extends Activity {
@@ -44,6 +44,7 @@ public class SearchActivity extends Activity {
     private ActionBarDrawerToggle mDrawerToggle;
 
     private SearchSettingsModel mSearchSettings;
+    private DrawerLayout mDrawerLayout;
 
     public static String FULLSCREEN_IMAGE_KEY = "fullImageURL";
 
@@ -92,14 +93,19 @@ public class SearchActivity extends Activity {
     private void setupSideNav() {
         searchHistoryAdapter = new SearchHistoryAdapter(this, new ArrayList<SearchHistoryModel>());
 
-        ListView sideNav = (ListView)findViewById(R.id.left_drawer);
-        sideNav.setAdapter(searchHistoryAdapter);
+        setupNavListeners();
+
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
 
 
-        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+    }
+
+    void setupNavListeners() {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,
-                drawerLayout,
+                mDrawerLayout,
                 R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
                 R.string.drawer_open,
                 R.string.drawer_close
@@ -118,12 +124,12 @@ public class SearchActivity extends Activity {
             }
         };
 
+
         // Set the drawer toggle as the DrawerListener
-        drawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
-
+        ListView sideNav = (ListView)findViewById(R.id.left_drawer);
+        sideNav.setAdapter(searchHistoryAdapter);
 
         sideNav.setOnTouchListener(new SwipeDismissListViewTouchListener(sideNav, new SwipeDismissListViewTouchListener.DismissCallbacks() {
             @Override
@@ -140,6 +146,16 @@ public class SearchActivity extends Activity {
             }
         }));
 
+        sideNav.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                SearchHistoryModel historyItem = (SearchHistoryModel)parent.getAdapter().getItem(position);
+                mSearchSettings = historyItem.searchSettings;
+                onSearch(historyItem.query);
+            }
+        });
+
+        mDrawerLayout.openDrawer(Gravity.LEFT);
 
     }
 
@@ -163,15 +179,10 @@ public class SearchActivity extends Activity {
                 if (visible) {
                     errorView.setVisibility(View.VISIBLE);
                     gvResults.setVisibility(View.GONE);
-                    addGearsViewIfNeeded();
                 }
                 else {
                     errorView.setVisibility(View.GONE);
                     gvResults.setVisibility(View.VISIBLE);
-                    if (mGearsView != null) {
-                        errorView.removeView(mGearsView);
-                        mGearsView = null;
-                    }
                 }
             }
         });
@@ -185,70 +196,18 @@ public class SearchActivity extends Activity {
         SearchActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                LinearLayout errorView = (LinearLayout)findViewById(R.id.llEmptyState);
+                RelativeLayout errorView = (RelativeLayout)findViewById(R.id.llEmptyState);
                 if (visible) {
                     errorView.setVisibility(View.VISIBLE);
                     gvResults.setVisibility(View.GONE);
-                    addEmptyStateGifIfNeeded();
                 }
                 else {
                     errorView.setVisibility(View.GONE);
                     gvResults.setVisibility(View.VISIBLE);
-                    if (mEmptyStateGif != null) {
-                        errorView.removeView(mEmptyStateGif);
-                        mEmptyStateGif = null;
-                    }
                 }
             }
         });
     }
-
-
-    void addGearsViewIfNeeded() {
-        if (mGearsView == null) {
-            mGearsView = newGearsGif();
-            mGearsView.setLayoutParams(new LinearLayout.LayoutParams(344, 341));
-            LinearLayout emptyStateContainer = (LinearLayout)findViewById(R.id.llErrorState);
-            emptyStateContainer.addView(mGearsView);
-        }
-    }
-
-
-    GifMovieView newGearsGif() {
-        InputStream stream;
-        try {
-            stream = getAssets().open("gears.gif");
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-        GifMovieView gifView = new GifMovieView(this, stream);
-        return gifView;
-    }
-
-    void addEmptyStateGifIfNeeded() {
-        if (mEmptyStateGif == null) {
-            mEmptyStateGif = newEmptyStateGif();
-            mEmptyStateGif.setLayoutParams(new LinearLayout.LayoutParams(500, 500));
-            LinearLayout emptyStateContainer = (LinearLayout)findViewById(R.id.llEmptyState);
-            emptyStateContainer.addView(mEmptyStateGif);
-        }
-    }
-
-    GifMovieView newEmptyStateGif() {
-        InputStream stream;
-        try {
-            stream = getAssets().open("bulging_stripes.gif");
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-        GifMovieView gifView = new GifMovieView(this, stream);
-        return gifView;
-    }
-
 
     /**
      * Perform exponential backoff checking for internet connectivity
@@ -279,18 +238,17 @@ public class SearchActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search, menu);
-        setupSearchBar(menu);
+        setupSearchBar();
         return true;
     }
 
-    private void setupSearchBar(Menu menu) {
-        final MenuItem searchItem = menu.findItem(R.id.action_search);
-        mSearchView = (SearchView) searchItem.getActionView();
+    private void setupSearchBar() {
+        mSearchView = (SearchView) findViewById(R.id.svImageQuery);
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 mSearchView.clearFocus();
-                onSearchClicked();
+                onSearch(mSearchView.getQuery().toString());
                 return true;
             }
 
@@ -379,8 +337,7 @@ public class SearchActivity extends Activity {
         return searchHistoryAdapter.getItem(searchHistoryAdapter.getCount() - 1);
     }
 
-    public void onSearchClicked() {
-        String queryString = mSearchView.getQuery().toString();
+    public void onSearch(String queryString) {
         Toast.makeText(this,String.format("Searching for %s", queryString), Toast.LENGTH_LONG).show();
         imageAdapter.clear();
         asyncAppendPageOfResults(0, queryString);
@@ -389,6 +346,8 @@ public class SearchActivity extends Activity {
         search.query = queryString;
         search.searchSettings = mSearchSettings;
         searchHistoryAdapter.add(search);
+
+        mDrawerLayout.closeDrawers();
     }
 
     @Override

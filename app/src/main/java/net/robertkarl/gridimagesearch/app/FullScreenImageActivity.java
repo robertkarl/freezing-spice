@@ -28,6 +28,7 @@ public class FullScreenImageActivity extends Activity {
     ImageResult imageResult;
     private SmarterImageView mFullScreenImage;
     private ShareActionProvider mShareActionProvider;
+    private Intent mShareIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,12 +38,15 @@ public class FullScreenImageActivity extends Activity {
         imageResult = (ImageResult)getIntent().getSerializableExtra(SearchActivity.FULLSCREEN_IMAGE_KEY);
         mFullScreenImage = (SmarterImageView)findViewById(R.id.ivFullScreen);
 
+
+
         mFullScreenImage.setImageUrl(imageResult.getFullURL(), new SmartImageTask.OnCompleteListener() {
             @Override
             public void onComplete() {
                 setupShareIntent();
             }
         });
+
 
     }
 
@@ -53,7 +57,7 @@ public class FullScreenImageActivity extends Activity {
         shareIntent.setAction(Intent.ACTION_SEND);
         shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
         shareIntent.setType("image/*");
-        mShareActionProvider.setShareIntent(shareIntent);
+        /// Share menu item may not have been created yet.
     }
 
     /**
@@ -84,12 +88,17 @@ public class FullScreenImageActivity extends Activity {
         return bmpUri;
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.menu_item_share);
+        mShareActionProvider = (ShareActionProvider)item.getActionProvider();
+        mShareActionProvider.setShareIntent(mShareIntent);
+        return super.onPrepareOptionsMenu(menu);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.image_details, menu);
-        MenuItem item = menu.findItem(R.id.menu_item_share);
-        mShareActionProvider = (ShareActionProvider)item.getActionProvider();
         return true;
     }
 }

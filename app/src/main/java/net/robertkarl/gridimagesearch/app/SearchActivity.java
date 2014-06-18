@@ -39,8 +39,6 @@ public class SearchActivity extends Activity {
     public static String SEARCH_SETTINGS_EXTRA = "net.robertkarl.searchSettings";
     private GridView gvResults;
     private SearchView mSearchView;
-    private GifMovieView mGearsView;
-    private GifMovieView mEmptyStateGif;
     private ActionBarDrawerToggle mDrawerToggle;
 
     private SearchSettingsModel mSearchSettings;
@@ -168,7 +166,6 @@ public class SearchActivity extends Activity {
 
 
     /**
-     * Safe to call from any thread
      * @param visible true if the Error state should be shown
      */
     void setErrorStateVisibility(final boolean visible) {
@@ -198,7 +195,6 @@ public class SearchActivity extends Activity {
     }
 
     /**
-     * Safe to call from any thread
      * @param visible true if the empty (no results) state should be shown
      */
     void setEmptyStateVisibility(final boolean visible) {

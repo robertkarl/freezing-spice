@@ -2,6 +2,9 @@ package net.robertkarl.gridimagesearch.app.settings;
 
 import java.io.Serializable;
 
+/**
+ * Describes a complete list of search settings.
+ */
 public class SearchSettingsModel implements Serializable {
 
     public String imageSize;

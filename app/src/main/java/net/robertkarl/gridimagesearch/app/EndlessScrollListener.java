@@ -2,6 +2,9 @@ package net.robertkarl.gridimagesearch.app;
 
 import android.widget.AbsListView;
 
+/**
+ * CodePath provided interface for loading stuff as it is is needed in a ListView
+ */
 public abstract class EndlessScrollListener implements AbsListView.OnScrollListener {
 
     // The minimum amount of items to have below your current scroll position

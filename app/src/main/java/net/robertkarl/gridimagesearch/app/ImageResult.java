@@ -7,6 +7,9 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * Represent a single google image API result - thumbnail and image URIs
+ */
 public class ImageResult implements Serializable {
 
     private String fullURL;

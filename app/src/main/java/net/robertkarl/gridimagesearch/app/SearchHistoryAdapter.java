@@ -13,6 +13,9 @@ import net.robertkarl.gridimagesearch.app.swipetodismiss.SwipeDismissTouchListen
 
 import java.util.List;
 
+/**
+ * Provide history items for the left side navigation.
+ */
 public class SearchHistoryAdapter extends ArrayAdapter<SearchHistoryModel> {
 
 

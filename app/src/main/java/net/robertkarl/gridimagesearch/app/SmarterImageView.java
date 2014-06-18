@@ -1,17 +1,7 @@
 package net.robertkarl.gridimagesearch.app;
-/*
- * TouchImageView.java
- * By: Michael Ortiz
- * Updated By: Patrick Lackemacher
- * Updated By: Babay88
- * Updated By: @ipsilondev
- * Updated By: hank-cp
- * Updated By: singpolyma
- * -------------------
- * Extends Android ImageView to include pinch zooming, panning, fling and double tap zoom.
- */
 
 import android.annotation.TargetApi;
+
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -44,6 +34,9 @@ import com.loopj.android.image.WebImage;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Combines Michael Ortiz's touch zoom code with lazy loading code from SmartImageView.
+ */
 public class SmarterImageView extends ImageView {
     private static final int LOADING_THREADS = 4;
     private static ExecutorService threadPool = Executors.newFixedThreadPool(LOADING_THREADS);

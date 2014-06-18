@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -231,6 +232,8 @@ public class SearchActivity extends Activity {
             public void run() {
                 if (Connectivity.pingGoogleSynchronous()) {
                     setErrorStateVisibility(false);
+                    Toast.makeText(SearchActivity.this, "Welcome back", Toast.LENGTH_SHORT).show();
+                    mDrawerLayout.openDrawer(Gravity.LEFT);
                 }
                 else {
                     Log.d("DEBUG", String.format("Checking server connection in %d millis", delay * 2));

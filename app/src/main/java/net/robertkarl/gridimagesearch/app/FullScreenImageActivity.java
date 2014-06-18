@@ -38,8 +38,6 @@ public class FullScreenImageActivity extends Activity {
         imageResult = (ImageResult)getIntent().getSerializableExtra(SearchActivity.FULLSCREEN_IMAGE_KEY);
         mFullScreenImage = (SmarterImageView)findViewById(R.id.ivFullScreen);
 
-
-
         mFullScreenImage.setImageUrl(imageResult.getFullURL(), new SmartImageTask.OnCompleteListener() {
             @Override
             public void onComplete() {
@@ -57,7 +55,11 @@ public class FullScreenImageActivity extends Activity {
         shareIntent.setAction(Intent.ACTION_SEND);
         shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
         shareIntent.setType("image/*");
+        mShareIntent = shareIntent;
         /// Share menu item may not have been created yet.
+        if (mShareActionProvider != null) {
+            mShareActionProvider.setShareIntent(mShareIntent);
+        }
     }
 
     /**

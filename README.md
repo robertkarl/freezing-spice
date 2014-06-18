@@ -2,7 +2,7 @@ CodePath SF Week 2 - Robert Karl - Google Image Search
 =============
 
 #### Time
-~15 hours
+~25 hours
 
 
 #### User Stories

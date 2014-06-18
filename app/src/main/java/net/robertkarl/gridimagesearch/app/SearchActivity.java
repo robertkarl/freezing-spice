@@ -153,7 +153,7 @@ public class SearchActivity extends Activity {
             }
         });
 
-//        mDrawerLayout.openDrawer(Gravity.LEFT);
+        mDrawerLayout.openDrawer(Gravity.LEFT);
 
     }
 

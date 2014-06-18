@@ -8,16 +8,15 @@ import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -155,7 +154,7 @@ public class SearchActivity extends Activity {
             }
         });
 
-        mDrawerLayout.openDrawer(Gravity.LEFT);
+//        mDrawerLayout.openDrawer(Gravity.LEFT);
 
     }
 
@@ -175,8 +174,10 @@ public class SearchActivity extends Activity {
         SearchActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                LinearLayout errorView = (LinearLayout)findViewById(R.id.llErrorState);
+                View errorView = findViewById(R.id.errorStateLayout);
                 if (visible) {
+                    updateErrorStateText(getString(R.string.error_state_maintext),
+                            getString(R.string.error_state_subtext));
                     errorView.setVisibility(View.VISIBLE);
                     gvResults.setVisibility(View.GONE);
                 }
@@ -188,6 +189,13 @@ public class SearchActivity extends Activity {
         });
     }
 
+    void updateErrorStateText(String mainText, String flavorText) {
+        TextView mainError = (TextView)findViewById(R.id.tvErrorStateMainText);
+        TextView flavaFlave = (TextView)findViewById(R.id.tvErrorStateFlavorText);
+        flavaFlave.setText(flavorText);
+        mainError.setText(mainText);
+    }
+
     /**
      * Safe to call from any thread
      * @param visible true if the empty (no results) state should be shown
@@ -196,8 +204,10 @@ public class SearchActivity extends Activity {
         SearchActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                RelativeLayout errorView = (RelativeLayout)findViewById(R.id.llEmptyState);
+                RelativeLayout errorView = (RelativeLayout)findViewById(R.id.errorStateLayout);
                 if (visible) {
+                    updateErrorStateText(getString(R.string.empty_state_maintext),
+                            getString(R.string.empty_state_subtext));
                     errorView.setVisibility(View.VISIBLE);
                     gvResults.setVisibility(View.GONE);
                 }

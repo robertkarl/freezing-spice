@@ -1,4 +1,5 @@
 5 hr Friday
 5 hours Saturday
 10 hours Sunday
+5 hours Tuesday
 

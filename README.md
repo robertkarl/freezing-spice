@@ -16,20 +16,20 @@ CodePath SF Week 2 - Robert Karl - Google Image Search
 Optionals
 
 - [x] Error handling: display an error screen on the results page. Retry with exponential backoff and disable the error state when connection returns.
-- [x] Use the ActionBar SearchView as the query box
+- [x] Use the ActionBar SearchView as the query box (added this to the side nav)
 - [x] User can share an image to their friends or email it to themselves
 - [ ] Replace Filter Settings Activity with a lightweight modal overlay
-- [ ]  Improve the user interface and experiment with image assets and/or styling and coloring
+- [x]  Improve the user interface and experiment with image assets and/or styling and coloring (some lightweight styling done)
 - [ ] Use the StaggeredGridView. Implemented this but did not get good results. Poor scroll performance with SmartImageView.
 - [x]  User can zoom or pan images displayed in full-screen detail view
 
 Extra
-- [x] Use an animated gif for the error state. Value add to the user? Marginal at best. 
-
+- [x] Add side navigation with history. Allow editing history.
 
 
 #### GIF Walkthrough
 
+![Walkthrough](https://raw.githubusercontent.com/robertkarl/freezing-spice/master/ImageSearchDemo.gif)
 
 #### Test Plan
 - Run a search with internet disabled. Error state should be displayed.
